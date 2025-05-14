@@ -1,65 +1,88 @@
-# Voting App in Kubernetes
+# Voting App sur Kubernetes avec Minikube --- ESGI - Indrit KULLA 5SRC2
 
-A simple distributed application running across multiple Docker containers.
 
-## Getting started
 
-Download [Docker Desktop](https://www.docker.com/products/docker-desktop) for Mac or Windows. [Docker Compose](https://docs.docker.com/compose) will be automatically installed. On Linux, make sure you have the latest version of [Compose](https://docs.docker.com/compose/install/).
+## Objectif du Projet
 
-This solution uses Python, Node.js, .NET, with Redis for messaging and Postgres for storage.
+L'objectf de ce projet de mise en œuvre de l’application open-source Example Voting App dans un cluster Minikube.
 
-Run in this directory to build and run the app:
+## Prérequis
+Les outils suivants doivent être installés: 
+- dokcer
+- Kubectl
+- Minikube 
+- Git 
 
-```shell
-docker compose up
-```
+## Architecture de l’Application
+![image](https://github.com/user-attachments/assets/c65086ac-9607-4181-9f10-6f4046b09950)
 
-The `vote` app will be running at [http://localhost:8080](http://localhost:8080), and the `results` will be at [http://localhost:8081](http://localhost:8081).
-
-Alternately, if you want to run it on a [Docker Swarm](https://docs.docker.com/engine/swarm/), first make sure you have a swarm. If you don't, run:
-
-```shell
-docker swarm init
-```
-
-Once you have your swarm, in this directory run:
+## I - Clonage du Dépôt
 
 ```shell
-docker stack deploy --compose-file docker-stack.yml vote
+git clone git@github.com:titan24001/IK-esgi-voting-app.git
+cd IK-esgi-voting-app/
 ```
 
-## Run the app in Kubernetes
+## II -Déploiement Kubernetes
 
-The folder k8s-specifications contains the YAML specifications of the Voting App's services.
 
-Run the following command to create the deployments and services. Note it will create these resources in your current namespace (`default` if you haven't changed it.)
+### 1.  Démarrer Minikube 
+```shell
+minikube start --driver=docker
+```
+
+### 2.  Appliquer les fichiers Kubernetes
 
 ```shell
-kubectl create -f k8s-specifications/
+kubectl apply -f k8s-specifications/
 ```
 
-The `vote` web app is then available on port 31000 on each host of the cluster, the `result` web app is available on port 31001.
+## III -Vérification du Déploiement
 
-To remove them, run:
+
+### 1.  Vérifier que tous les Pods sont en fonctionnement
 
 ```shell
-kubectl delete -f k8s-specifications/
+kubectl get pods
 ```
 
-## Architecture
+![image](https://github.com/user-attachments/assets/b5b2b08d-87f8-4b4c-827f-7c475477fae7)
 
-![Architecture diagram](architecture.excalidraw.png)
+### 2. Vérifier les services
 
-* A front-end web app in [Python](/vote) which lets you vote between two options
-* A [Redis](https://hub.docker.com/_/redis/) which collects new votes
-* A [.NET](/worker/) worker which consumes votes and stores them in…
-* A [Postgres](https://hub.docker.com/_/postgres/) database backed by a Docker volume
-* A [Node.js](/result) web app which shows the results of the voting in real time
+```shell
+kubectl get svc
+```
 
-## Notes
+![image](https://github.com/user-attachments/assets/f99d1436-c0af-4e21-8131-6a8380f2e7a4)
 
-The voting application only accepts one vote per client browser. It does not register additional votes if a vote has already been submitted from a client.
+Une fois que tous les pods soient en Running ou Completed.
 
-This isn't an example of a properly architected perfectly designed distributed app... it's just a simple
-example of the various types of pieces and languages you might see (queues, persistent data, etc), and how to
-deal with them in Docker at a basic level.
+### 3. Utilisez Minikube pour exposer les services externes :
+
+```shell
+minikube service vote
+minikube service result
+```
+![image](https://github.com/user-attachments/assets/ed5ae339-8b65-4b71-9f9b-e974baa278ed)
+
+### 4. Pourexposer les services à la machine physique il faut faire un tunnel SSH :
+
+```shell
+ssh -L 31000:192.168.49.2:31000 -L 31001:192.168.49.2:31001 user@ipdelamachine
+```
+
+## IV -Accéder à l'application
+
+###  Interface de vote
+Accédez à l’interface de vote via le navigateur à l’adresse suivante : (http://localhost:31000)
+![image](https://github.com/user-attachments/assets/6bc7676d-ebb0-43b2-8835-502e12496ec4)
+
+### Test de noter 
+![image](https://github.com/user-attachments/assets/a60691e4-b8c4-4817-87e0-a11615eda572)
+
+
+###  Interface de résultat
+Pour consulter les résultats allez sur : (http://localhost:31001)
+![image](https://github.com/user-attachments/assets/6ee5701c-173f-4bed-bbd5-841bcc8a2c0f)
+
