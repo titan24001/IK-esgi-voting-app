@@ -4,11 +4,11 @@
 
 ## Objectif du Projet
 
-L'objectf de ce projet de mise en œuvre de l’application open-source Example Voting App dans un cluster Minikube.
+L'objectf de ce projet de mise en œuvre de l’application open-source Example Voting App https://github.com/dockersamples/example-voting-app dans un cluster Minikube.
 
 ## Prérequis
 Les outils suivants doivent être installés: 
-- dokcer
+- docker
 - Kubectl
 - Minikube 
 - Git 
