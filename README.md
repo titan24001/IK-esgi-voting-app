@@ -66,7 +66,7 @@ minikube service result
 ```
 ![image](https://github.com/user-attachments/assets/ed5ae339-8b65-4b71-9f9b-e974baa278ed)
 
-### 4. Pourexposer les services à la machine physique il faut faire un tunnel SSH :
+### 4. Pour exposer les services à la machine physique il faut faire un tunnel SSH :
 
 ```shell
 ssh -L 31000:192.168.49.2:31000 -L 31001:192.168.49.2:31001 user@ipdelamachine
